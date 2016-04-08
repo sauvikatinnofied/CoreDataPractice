@@ -11,7 +11,7 @@ import CoreData
 
 
 typealias CoreDataSaveDeleteCallback = (success: Bool, error: CoreDataError?) -> Void
-typealias EmployeeFetchCallBack = (employess:[NSManagedObject]?, error: CoreDataError?) -> Void
+typealias EmployeeFetchCallBack = (employess: [NSManagedObject]?, error: CoreDataError?) -> Void
 
 class PersistanceManager: NSObject {
     
@@ -75,7 +75,7 @@ class PersistanceManager: NSObject {
     
     
     // MARK: - FUNCTIONS
-    func saveManagedObjectContextWithCompletionBlock(callBack: CoreDataSaveDeleteCallback?){
+    func saveManagedObjectContextWithCompletionBlock(callBack: CoreDataSaveDeleteCallback?) {
         var error: CoreDataError?
         var savingStatus = false
         managedObjectContext.performBlock({ () -> Void in
@@ -89,7 +89,7 @@ class PersistanceManager: NSObject {
             }
             
             dispatch_async(dispatch_get_main_queue(), {
-                if let callBack = callBack{
+                if let callBack = callBack {
                     callBack(success: savingStatus, error: error)
                 }
             })
@@ -103,10 +103,10 @@ class PersistanceManager: NSObject {
 
 //MARK: - DEPARTMENT SERVICES
 extension PersistanceManager {
-    func createNewDepartment(departmentID: String, departmentName: String, callback: CoreDataSaveDeleteCallback){
+    func createNewDepartment(departmentID: String, departmentName: String, callback: CoreDataSaveDeleteCallback) {
         DepartmentServicesCD.createNewDepartment(departmentID, departmentName: departmentName, callback: callback)
     }
-    func loadAllDepartmentsMO() -> [NSManagedObject]{
+    func loadAllDepartmentsMO() -> [NSManagedObject] {
         return DepartmentServicesCD.loadAllDepartmentsMO()
     }
     
@@ -116,7 +116,7 @@ extension PersistanceManager {
 }
 
 extension PersistanceManager {
-    func addNewEmployee(fistName: String, lastName: String, employeeID: String, inDepartment deptID: String, callback: CoreDataSaveDeleteCallback){
+    func addNewEmployee(fistName: String, lastName: String, employeeID: String, inDepartment deptID: String, callback: CoreDataSaveDeleteCallback) {
         EmployeeServicesCD.addNewEmployee(fistName, lastName: lastName, employeeID: employeeID, inDepartment: deptID, callback: callback)
     }
 }

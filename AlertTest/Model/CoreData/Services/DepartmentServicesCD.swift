@@ -11,19 +11,18 @@ import CoreData
 
 
 class DepartmentServicesCD: NSObject {
-    
     static let moc = PersistanceManager.sharedManager.managedObjectContext
     static let deptEntityDescription = NSEntityDescription.entityForName("Department", inManagedObjectContext: moc)
     static var allEntityFetchRequest: NSFetchRequest { return NSFetchRequest(entityName: "Department") }
     
-    static var allDepartmentMOs : [NSManagedObject] {
+    static var allDepartmentMOs: [NSManagedObject] {
         return loadAllDepartmentsMO()
     }
     
-    static func createNewDepartment(departmentID: String, departmentName: String, callback: CoreDataSaveDeleteCallback){
+    static func createNewDepartment(departmentID: String, departmentName: String, callback: CoreDataSaveDeleteCallback) {
         
         // 1. TESTING WHETHER DEPARTMENT EXISTS OR NOT
-        if let _ = getDepartmentMOWithID(departmentID){
+        if let _ = getDepartmentMOWithID(departmentID) {
             callback(success: false, error: CoreDataError.DepartmentAlreadyExistError)
             return
         }
@@ -32,7 +31,7 @@ class DepartmentServicesCD: NSObject {
         let newEntry = NSManagedObject(entity: deptEntityDescription!, insertIntoManagedObjectContext: moc)
         newEntry.setValue(departmentID, forKey: "departmentID")
         newEntry.setValue(departmentName, forKey: "departmentName")
-        PersistanceManager.sharedManager.saveManagedObjectContextWithCompletionBlock( {(success, error) -> Void in
+        PersistanceManager.sharedManager.saveManagedObjectContextWithCompletionBlock({(success, error) -> Void in
             
             var successStatus = false
             var error: CoreDataError?
@@ -42,15 +41,13 @@ class DepartmentServicesCD: NSObject {
             } else {
                 error = CoreDataError.DepartmentCreationError
             }
-            
             callback(success: successStatus, error: error)
         })
     }
     
     static func getAllEmployessFromDepartment(deptID: String, callBack: EmployeeFetchCallBack) {
         if let dept = getDepartmentMOWithID(deptID) {
-            if let employeesSet = dept.valueForKey("employees"){
-                let employees = ((employeesSet as! NSSet).allObjects) as! [NSManagedObject]
+            if let employees = (dept.valueForKey("employees")  as? NSSet)?.allObjects as? [NSManagedObject] {              
                 if employees.count > 0 {
                     callBack(employess: employees, error: nil)
                 } else {
@@ -64,7 +61,11 @@ class DepartmentServicesCD: NSObject {
     }
     static func loadAllDepartmentsMO() -> [NSManagedObject] {
         do {
-            return  try moc.executeFetchRequest(allEntityFetchRequest) as! [NSManagedObject]
+          if let result = try moc.executeFetchRequest(allEntityFetchRequest) as? [NSManagedObject] {
+            return result
+          } else {
+            
+          }
         } catch {
             print("DepartmentServicesCD: loadAllDepartmentsMOM() error = \(error)")
         }
@@ -78,7 +79,11 @@ class DepartmentServicesCD: NSObject {
         request.predicate = NSPredicate(format: "departmentID = %@", deptID)
         
         do {
-          return try (moc.executeFetchRequest(request) as! [NSManagedObject]).last
+          if let result = try moc.executeFetchRequest(allEntityFetchRequest) as? [NSManagedObject] {
+            return result.last
+          } else {
+            
+          }
         } catch {
             print("DepartmentServicesCD: getDepartmentWithID() error = \(error)")
         }

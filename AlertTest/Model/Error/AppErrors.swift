@@ -37,7 +37,7 @@ enum CoreDataError: Int, AppError {
 
     
 
-    func errorCode() -> Int{
+    func errorCode() -> Int {
         
         var errorCode = 5000
         
@@ -133,6 +133,5 @@ enum CoreDataError: Int, AppError {
     }
     
     var description: String {return "\(errorString())" }
-    
     
 }
